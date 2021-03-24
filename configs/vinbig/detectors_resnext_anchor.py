@@ -37,6 +37,22 @@ model = dict(
             stage_with_sac=(False, True, True, True),
             pretrained='open-mmlab://resnext101_32x4d',
             style='pytorch')),
+    rpn_head=dict(
+        type='RPNHead',
+        in_channels=256,
+        feat_channels=256,
+        anchor_generator=dict(
+            type='AnchorGenerator',
+            scales=[8, 16, 32, 64, 128, 256, 512],
+            ratios=[0.33, 0.5, 1.0, 2.0, 3.0],
+            strides=[4, 4, 8, 16, 32, 64, 64]),
+        bbox_coder=dict(
+            type='DeltaXYWHBBoxCoder',
+            target_means=[.0, .0, .0, .0],
+            target_stds=[1.0, 1.0, 1.0, 1.0]),
+        loss_cls=dict(
+            type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0),
+        loss_bbox=dict(type='SmoothL1Loss', beta=1.0 / 9.0, loss_weight=1.0)),
     roi_head=dict(
         bbox_head=[
             dict(
@@ -59,7 +75,7 @@ model = dict(
         ),
         rcnn=dict(
             score_thr=0.0,
-            nms=dict(type='nms', iou_threshold=0.0)
+            nms=dict(type='nms', iou_threshold=0.4)
         )
     )
 )

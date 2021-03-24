@@ -5,25 +5,22 @@ classes = ("Aortic_enlargement", "Atelectasis",
            "Pleural_effusion", "Pleural_thickening",
            "Pneumothorax", "Pulmonary_fibrosis")
 
-
 albu_train_transforms = [
     dict(
         type='ShiftScaleRotate',
-        shift_limit=0.0,
         scale_limit=0.15,
         rotate_limit=10,
-        interpolation=1,
         p=0.5),
     dict(
         type='RandomBrightnessContrast',
-        brightness_limit=[0.1, 0.3],
-        contrast_limit=[0.1, 0.3],
         p=0.5),
+    dict(type="Cutout", num_holes=8,
+         max_h_size=16, max_w_size=16, fill_value=0, p=0.7)
 ]
 
 data = dict(
     # batch size
-    samples_per_gpu=2,
+    samples_per_gpu=4,
     # num worker
     workers_per_gpu=2,
     train=dict(
