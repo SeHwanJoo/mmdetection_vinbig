@@ -9,13 +9,27 @@ model = dict(
     pretrained='open-mmlab://resnext101_32x4d',
     backbone=dict(
         type='DetectoRS_ResNeXt',
+        pretrained='open-mmlab://resnext101_32x4d',
         depth=101,
         groups=32,
         base_width=4,
         conv_cfg=dict(type='ConvAWS'),
         sac=dict(type='SAC', use_deform=True),
         stage_with_sac=(False, True, True, True),
-        output_img=True),
+        output_img=True,
+        plugins=[
+            dict(
+                cfg=dict(
+                    type='GeneralizedAttention',
+                    spatial_range=-1,
+                    num_heads=8,
+                    attention_type='0010',
+                    kv_stride=2),
+                stages=(False, False, True, True),
+                in_channels=512,
+                position='after_conv2')
+        ]
+    ),
     neck=dict(
         type='RFP',
         rfp_steps=2,
@@ -59,7 +73,7 @@ model = dict(
         ),
         rcnn=dict(
             score_thr=0.0,
-            nms=dict(type='nms', iou_threshold=0.0)
+            nms=dict(type='nms', iou_threshold=0.4)
         )
     )
 )
