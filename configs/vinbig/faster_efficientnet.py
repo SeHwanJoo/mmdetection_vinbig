@@ -13,6 +13,7 @@ model = dict(
         model_name='efficientnet-b3'
     ),
     neck=dict(
+        # backbone 바꿀때 inchannel 바꿔줘야함
         type='FPN',
         # 0: 24, 40, 112, 320
         # 1: 24, 40, 112, 320
